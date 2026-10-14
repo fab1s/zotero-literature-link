@@ -1,8 +1,6 @@
 data.json
 node_modules/
-/main.js
 *.zip
 .DS_Store
 .env
 .env.*
-*.log
