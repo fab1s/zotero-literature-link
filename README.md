@@ -4,11 +4,11 @@ Create Obsidian literature notes from Zotero links and open them directly from Z
 
 ## Install
 
-1. Install [BRAT](https://github.com/TfTHacker/obsidian42-brat) in Obsidian and add `https://github.com/fab1s/zotero-literature-link`.
-2. Enable Zotero Literature Link.
+1. Download `main.js`, `manifest.json`, and `styles.css` from [Releases](https://github.com/fab1s/zotero-literature-link/releases) into `.obsidian/plugins/zotero-literature-link` in your vault.
+2. Reload Obsidian and enable Zotero Literature Link.
 3. Enter your numeric user ID and an API key with library write access from [Zotero settings](https://www.zotero.org/settings/keys).
 
-Manual installation: download `main.js`, `manifest.json`, and `styles.css` from [Releases](https://github.com/fab1s/zotero-literature-link/releases), copy them into `.obsidian/plugins/zotero-literature-link`, then reload and enable the plugin.
+Optional: [BRAT](https://github.com/TfTHacker/obsidian42-brat) can install and update the plugin from GitHub. If you use BRAT, add `https://github.com/fab1s/zotero-literature-link` instead of copying the files manually.
 
 ## Use
 
