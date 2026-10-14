@@ -35,4 +35,8 @@ Zotero metadata must be synced. The API key is stored unencrypted in `data.json`
 
 Optional deletion removes only verified link attachments recorded as created by this plugin, never source items or PDFs. Deletion is off by default and permanent. **Dry run** skips Zotero changes while allowing local notes. After an offline move, run the attach command again when online.
 
+## Notice
+
 Agentically engineered with OpenAI Codex under human direction. [MIT license](LICENSE).
+
+Write permissions mean bugs or a leaked API key could modify or permanently delete Zotero data, so keep backups.
