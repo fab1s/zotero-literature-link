@@ -1,0 +1,15 @@
+{
+  "name": "zotero-literature-link",
+  "version": "0.4.0",
+  "private": true,
+  "description": "Create literature notes from Zotero items and link them back to Zotero.",
+  "license": "MIT",
+  "scripts": {
+    "build": "node scripts/build.mjs",
+    "test": "node --test tests/plugin.test.cjs",
+    "check": "node --check src/main.js && node scripts/check-release.mjs"
+  },
+  "engines": {
+    "node": ">=22"
+  }
+}

@@ -1,0 +1,9 @@
+{
+  "id": "zotero-literature-link",
+  "name": "Zotero Literature Link",
+  "version": "0.4.0",
+  "minAppVersion": "1.4.0",
+  "description": "Create literature notes from Zotero items and link them back to your Zotero library.",
+  "author": "Zotero Literature Link contributors",
+  "isDesktopOnly": false
+}

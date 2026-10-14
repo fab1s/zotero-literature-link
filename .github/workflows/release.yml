@@ -1,0 +1,39 @@
+name: Release
+
+on:
+  push:
+    tags:
+      - "*"
+
+permissions:
+  contents: write
+
+jobs:
+  release:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Check out tagged source
+        uses: actions/checkout@v4
+        with:
+          persist-credentials: false
+      - name: Set up Node
+        uses: actions/setup-node@v4
+        with:
+          node-version: "22"
+      - name: Validate release metadata and syntax
+        run: npm run check
+      - name: Run safety tests
+        run: npm test
+      - name: Build plugin
+        run: npm run build
+      - name: Publish release assets
+        env:
+          GH_TOKEN: ${{ github.token }}
+          GH_REPO: ${{ github.repository }}
+          RELEASE_TAG: ${{ github.ref_name }}
+        run: |
+          assets=(main.js manifest.json)
+          if [ -f styles.css ]; then
+            assets+=(styles.css)
+          fi
+          gh release create "$RELEASE_TAG" "${assets[@]}" --verify-tag --title "$RELEASE_TAG" --generate-notes
