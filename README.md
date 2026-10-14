@@ -12,6 +12,8 @@ Manual installation: download `main.js`, `manifest.json`, and `styles.css` from 
 
 ## Use
 
+To copy a Zotero link easily, use [Actions & Tags](https://github.com/windingwind/zotero-actions-tags) with the [Copy Zotero link action](https://github.com/windingwind/zotero-actions-tags/discussions/115).
+
 Run **Create literature note from Zotero link**, paste the link, and select **Create note**.
 
 **1. Paste the Zotero link.**
