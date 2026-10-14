@@ -1,11 +1,11 @@
-# Zotero Literature Link
+# Zotero Literature Connection for Obsidian
 
-Create Obsidian literature notes from Zotero links and open them directly from Zotero. Link existing notes and keep their links updated when notes move or are renamed.
+Connect Zotero items and Obsidian literature notes with links in both directions. Open the source item from your note, or open the note from Zotero. Create new notes or link existing ones, with link updates when notes move or are renamed.
 
 ## Install
 
 1. Download `main.js`, `manifest.json`, and `styles.css` from [Releases](https://github.com/fab1s/zotero-literature-link/releases) into `.obsidian/plugins/zotero-literature-link` in your vault.
-2. Reload Obsidian and enable Zotero Literature Link.
+2. Reload Obsidian and enable Zotero Literature Connection.
 3. Enter your numeric user ID and an API key with library write access from [Zotero settings](https://www.zotero.org/settings/keys).
 
 Optional: [BRAT](https://github.com/TfTHacker/obsidian42-brat) can install and update the plugin from GitHub. If you use BRAT, add `https://github.com/fab1s/zotero-literature-link` instead of copying the files manually.
@@ -20,7 +20,7 @@ Run **Create literature note from Zotero link**, paste the link, and select **Cr
 
 <img src="images/create-note.png" alt="Prompt for a Zotero item link" width="440">
 
-**2. Write in the created note.** This example uses custom templates.
+**2. Open Zotero from your note using the Zotero link.** This example uses custom templates.
 
 <img src="images/literature-note.png" alt="Literature note with tags and a link to its Zotero source" width="620">
 
@@ -34,6 +34,6 @@ For an existing note containing a Zotero link, run **Attach this note's link to 
 
 Zotero metadata must be synced. The API key is stored unencrypted in `data.json`; never share it. Attachment links reveal your vault name and note path to people with library access.
 
-Optional deletion removes only verified link attachments created by this version or later, never source items or PDFs. Deletion is off by default and permanent. **Dry run** skips Zotero changes while allowing local notes. After an offline move, run the attach command again when online.
+Optional deletion removes only verified link attachments recorded as created by this plugin, never source items or PDFs. Deletion is off by default and permanent. **Dry run** skips Zotero changes while allowing local notes. After an offline move, run the attach command again when online.
 
 Agentically engineered with OpenAI Codex under human direction. [MIT license](LICENSE).

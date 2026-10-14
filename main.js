@@ -219,7 +219,7 @@ module.exports = class ZoteroLiteratureLink extends Plugin {
     this.operationQueue = this.operationQueue.then(async () => {
       if (this.active) await operation();
     }).catch(() => {
-      new Notice("Zotero Literature Link could not finish the operation. Check your connection and settings.");
+      new Notice("Zotero Literature Connection could not finish the operation. Check your connection and settings.");
     });
     return this.operationQueue;
   }
@@ -718,7 +718,7 @@ class ZoteroLiteratureLinkSettingTab extends PluginSettingTab {
 
     new Setting(containerEl)
       .setName("Remove the Zotero link when a note is deleted")
-      .setDesc("Off by default for new installs. Permanently deletes only a verified linked URL attachment recorded as created by this version or later. Never deletes the parent item.")
+      .setDesc("Off by default for new installs. Permanently deletes only a verified linked URL attachment recorded as created by this plugin. Never deletes the parent item.")
       .addToggle((t) =>
         t.setValue(s.syncDelete).onChange(async (v) => {
           s.syncDelete = v;
