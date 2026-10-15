@@ -13,7 +13,7 @@ Connect Zotero items and Obsidian literature notes with links in both directions
 
 To copy a Zotero link easily, use [Actions & Tags](https://github.com/windingwind/zotero-actions-tags) with the [Copy Zotero link action](https://github.com/windingwind/zotero-actions-tags/discussions/115).
 
-Run **Create literature note from Zotero link**, paste the link, and select **Create note**.
+Run **Create literature note from Zotero link**, paste the link, and select **Create note**. Both `zotero://select/` and `zotero://open-pdf/` links work. PDF links use the synced parent item’s metadata.
 
 **1. Paste the Zotero link.**
 

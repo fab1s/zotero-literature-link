@@ -28,8 +28,8 @@ const DEFAULT_SETTINGS = {
   links: {},
 };
 
-// Matches zotero://select/library/items/KEY and zotero://select/groups/123/items/KEY
-const ZOTERO_LINK = /zotero:\/\/select\/(?:library|groups\/(\d+))\/items\/([A-Z0-9]{8})/;
+// Matches Zotero item selection and PDF links in personal and group libraries.
+const ZOTERO_LINK = /zotero:\/\/(?:select|open-pdf)\/(?:library|groups\/(\d+))\/items\/([A-Z0-9]{8})(?![A-Za-z0-9])/;
 // Matches web links such as https://www.zotero.org/groups/123/name/items/KEY
 const ZOTERO_WEB = /zotero\.org\/(?:users\/\d+|groups\/(\d+))\/[^\s]*?items\/([A-Z0-9]{8})/;
 const BARE_KEY = /^[A-Z0-9]{8}$/;
@@ -52,7 +52,11 @@ function parseZotero(text) {
   if (!text) return null;
   const s = text.trim();
   let m = s.match(ZOTERO_LINK);
-  if (m) return { groupId: m[1] || null, key: m[2] };
+  if (m) return {
+    groupId: m[1] || null,
+    key: m[2],
+    ...(m[0].startsWith("zotero://open-pdf/") ? { isPdfLink: true } : {}),
+  };
   m = s.match(ZOTERO_WEB);
   if (m) return { groupId: m[1] || null, key: m[2] };
   if (BARE_KEY.test(s)) return { groupId: null, key: s };
@@ -516,12 +520,15 @@ module.exports = class ZoteroLiteratureLink extends Plugin {
       const value = fm && fm[prop];
       if (typeof value === "string") {
         const p = parseZotero(value);
-        if (p) return { library: this.libraryFor(p.groupId), key: p.key };
+        if (p) return { library: this.libraryFor(p.groupId), key: p.key, isPdfLink: p.isPdfLink };
       }
     }
     const text = await this.app.vault.cachedRead(file);
     const m = text.match(ZOTERO_LINK);
-    if (m) return { library: this.libraryFor(m[1]), key: m[2] };
+    if (m) {
+      const p = parseZotero(m[0]);
+      return { library: this.libraryFor(p.groupId), key: p.key, isPdfLink: p.isPdfLink };
+    }
     return null;
   }
 
@@ -529,23 +536,30 @@ module.exports = class ZoteroLiteratureLink extends Plugin {
     if (!this.hasCredentials()) return;
     const { linkTitle } = this.settings;
 
-    const target = knownTarget || this.settings.links[file.path] || (await this.findTarget(file));
+    let target = knownTarget || this.settings.links[file.path] || (await this.findTarget(file));
     if (!target) {
       new Notice(
-        "No Zotero item found in this note. Add a zotero://select link or set the key property in settings."
+        "No Zotero item found in this note. Add a Zotero item or PDF link, or set the key property in settings."
       );
       return;
     }
 
     const uri = this.uriFor(file.path);
 
-    const base = `/${target.library}/items`;
-
     try {
       if (this.settings.dryRun) {
         new Notice("Dry run: skipped creating or updating the Zotero link. Local note creation still works.");
         return;
       }
+      if (target.isPdfLink) {
+        const found = await this.fetchItem(target);
+        if (found.status !== 200) {
+          new Notice(`Zotero lookup failed (HTTP ${found.status}). The PDF and its parent item must be synced to zotero.org.`);
+          return;
+        }
+        target = found.target;
+      }
+      const base = `/${target.library}/items`;
       const remembered = this.settings.links[file.path];
       if (remembered?.createdByPlugin && remembered.library === target.library && remembered.key === target.key) {
         const found = await this.findAttachment(remembered);
