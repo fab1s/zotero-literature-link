@@ -29,7 +29,7 @@ const DEFAULT_SETTINGS = {
 };
 
 // Matches Zotero item selection and PDF links in personal and group libraries.
-const ZOTERO_LINK = /zotero:\/\/(?:select|open-pdf)\/(?:library|groups\/(\d+))\/items\/([A-Z0-9]{8})(?![A-Za-z0-9])/;
+const ZOTERO_LINK = /zotero:\/\/(?:select|open-pdf)\/(?:library|groups\/(\d+))\/items\/([A-Z0-9]{8})(?![A-Za-z0-9])(?:[?#][^\s<>"'`()\[\]{}]*)?/;
 // Matches web links such as https://www.zotero.org/groups/123/name/items/KEY
 const ZOTERO_WEB = /zotero\.org\/(?:users\/\d+|groups\/(\d+))\/[^\s]*?items\/([A-Z0-9]{8})/;
 const BARE_KEY = /^[A-Z0-9]{8}$/;
@@ -47,7 +47,7 @@ const TYPE_TAGS = {
   newspaperArticle: "article",
 };
 
-// Returns { groupId, key } or null for a Zotero link, web link or bare item key.
+// Returns the library and key, preserving the original URL for PDF links.
 function parseZotero(text) {
   if (!text) return null;
   const s = text.trim();
@@ -55,7 +55,7 @@ function parseZotero(text) {
   if (m) return {
     groupId: m[1] || null,
     key: m[2],
-    ...(m[0].startsWith("zotero://open-pdf/") ? { isPdfLink: true } : {}),
+    ...(m[0].startsWith("zotero://open-pdf/") ? { isPdfLink: true, pdfLink: m[0] } : {}),
   };
   m = s.match(ZOTERO_WEB);
   if (m) return { groupId: m[1] || null, key: m[2] };
@@ -332,9 +332,10 @@ module.exports = class ZoteroLiteratureLink extends Plugin {
       }
 
       const { data, target } = found;
-      const zoteroLink = target.library.startsWith("groups/")
+      const itemLink = target.library.startsWith("groups/")
         ? `zotero://select/${target.library}/items/${target.key}`
         : `zotero://select/library/items/${target.key}`;
+      const zoteroLink = parsed.pdfLink || itemLink;
 
       const vars = {
         citekey: citeKeyFor(data, target.key, this.settings.citationKeyMode),
@@ -367,7 +368,15 @@ module.exports = class ZoteroLiteratureLink extends Plugin {
           new Notice("The target path belongs to a folder or a different file type.");
           return;
         }
-        const existingTarget = this.settings.links[path] || await this.findTarget(file);
+        let existingTarget = this.settings.links[path] || await this.findTarget(file);
+        if (existingTarget?.isPdfLink) {
+          const existing = await this.fetchItem(existingTarget);
+          if (existing.status !== 200) {
+            new Notice(`Could not verify the existing note's Zotero item (HTTP ${existing.status}).`);
+            return;
+          }
+          existingTarget = existing.target;
+        }
         if (!existingTarget || existingTarget.library !== target.library || existingTarget.key !== target.key) {
           new Notice("That path already exists for another or unknown Zotero item. Change the file name template.");
           return;

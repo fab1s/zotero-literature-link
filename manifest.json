@@ -1,7 +1,7 @@
 {
   "id": "zotero-literature-link",
   "name": "Zotero Literature Connection",
-  "version": "0.4.2",
+  "version": "0.4.3",
   "minAppVersion": "1.4.0",
   "description": "Connect Zotero items and Obsidian literature notes with links in both directions.",
   "author": "Zotero Literature Connection contributors",
